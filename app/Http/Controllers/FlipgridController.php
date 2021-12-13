@@ -21,8 +21,14 @@ class FlipgridController extends Controller
         $topic_id = $request->topic_id;
 
         if (empty($grid_id) || empty($topic_id)) {
-            File::put('confirmation.txt', json_encode($request->all()));
-            config(['sns-response.data' => json_encode($request->all())]);
+            $payload = json_decode($request->getContent());
+            if(property_exists($payload, 'Type')) {
+                if($payload->Type === "SubscriptionConfirmation") {
+                    $confirmation_url = curl_init($payload->SubscribeURL);
+                    curl_exec($confirmation_url);
+                }
+            }
+            File::put('confirmation.txt', json_encode($request->getContent()));
             return response()->json( config('sns-response.data'), 200);
         }
 
