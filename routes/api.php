@@ -19,3 +19,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/', [\App\Http\Controllers\FlipgridController::class, 'create']);
+Route::get('/confirmation', [\App\Http\Controllers\FlipgridController::class, 'getConfirmation']);
