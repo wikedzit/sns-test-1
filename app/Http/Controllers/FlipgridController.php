@@ -30,7 +30,8 @@ class FlipgridController extends Controller
         try {
             $fg = Flipgrid::firstOrCreate([
                 'grid_id' => $data->grid_id,
-                'topic_id' => $data->topic_id
+                'topic_id' => $data->topic_id,
+                'payload' => $payload
             ]);
             return response()->json("Success", 200);
         } catch (\Exception $e) {

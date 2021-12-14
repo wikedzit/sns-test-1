@@ -17,6 +17,7 @@ class CreateFlipgridsTable extends Migration
             $table->id();
             $table->BigInteger('grid_id');
             $table->BigInteger('topic_id');
+            $table->text('payload');
             $table->timestamps();
         });
     }
