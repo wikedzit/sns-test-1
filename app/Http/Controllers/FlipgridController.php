@@ -28,11 +28,11 @@ class FlipgridController extends Controller
         $data = json_decode($payload);
 
         try {
-            $fg = Flipgrid::firstOrCreate([
-                'grid_id' => $data->grid_id,
-                'topic_id' => $data->topic_id,
-                'payload' => $payload
-            ]);
+            $fg = new Flipgrid;
+            $fg->grid_id = "";
+            $fg->topic_id = "";
+            $fg->payload = json_encode($request->getContent());
+            $fg->save();
             return response()->json("Success", 200);
         } catch (\Exception $e) {
             return response()->json('Error'.$e->getMessage(), 500);
