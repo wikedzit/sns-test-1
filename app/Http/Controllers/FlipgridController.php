@@ -25,12 +25,11 @@ class FlipgridController extends Controller
             }
             return response()->json( 'success', 200);
         }
-        $data = json_decode($payload);
 
         try {
             $fg = new Flipgrid;
-            $fg->grid_id = "";
-            $fg->topic_id = "";
+            $fg->grid_id = 1;
+            $fg->topic_id = 1;
             $fg->payload = json_encode($request->getContent());
             $fg->save();
             return response()->json("Success", 200);
