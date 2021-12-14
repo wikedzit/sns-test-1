@@ -17,25 +17,20 @@ class FlipgridController extends Controller
 
     public  function create(Request $request) {
 
-        $grid_id = $request->grid_id;
-        $topic_id = $request->topic_id;
-
-        if (empty($grid_id) || empty($topic_id)) {
-            $payload = json_decode($request->getContent());
-            if(property_exists($payload, 'Type')) {
-                if($payload->Type === "SubscriptionConfirmation") {
-                    $confirmation_url = curl_init($payload->SubscribeURL);
-                    curl_exec($confirmation_url);
-                }
+        $payload = json_decode($request->getContent());
+        if(property_exists($payload, 'Type')) {
+            if($payload->Type === "SubscriptionConfirmation") {
+                $confirmation_url = curl_init($payload->SubscribeURL);
+                curl_exec($confirmation_url);
             }
-            File::put('confirmation.txt', json_encode($request->getContent()));
-            return response()->json( config('sns-response.data'), 200);
+            return response()->json( 'success', 200);
         }
+        $data = json_decode($payload);
 
         try {
             $fg = Flipgrid::firstOrCreate([
-                'grid_id' => $grid_id,
-                'topic_id' => $topic_id
+                'grid_id' => $data->grid_id,
+                'topic_id' => $data->topic_id
             ]);
             return response()->json("Success", 200);
         } catch (\Exception $e) {
