@@ -38,6 +38,11 @@ class FlipgridController extends Controller
                 return response()->json( 'Message received', 200);
             }
         } catch (\Exception $e) {
+            $fg = new Flipgrid;
+            $fg->grid_id = 1;
+            $fg->topic_id = 1;
+            $fg->payload = json_encode($e->getMessage());
+            $fg->save();
             return response()->json('Error'.$e->getMessage(), 500);
         }
         return response()->json('Warning, nothing happened', 200);
