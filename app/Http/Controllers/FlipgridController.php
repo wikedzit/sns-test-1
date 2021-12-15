@@ -20,10 +20,10 @@ class FlipgridController extends Controller
             $payload = json_decode($request->getContent());
             if(property_exists($payload, 'Type')) {
                 if($payload->Type === "SubscriptionConfirmation") {
-                    $confirmation_url = curl_init($payload->SubscribeURL);
-                    curl_exec($confirmation_url);
+                    //$confirmation_url = curl_init($payload->SubscribeURL);
+                    //curl_exec($confirmation_url);
                 }
-                return response()->json( 'success', 200);
+                //return response()->json( 'success', 200);
             }
 
             $fg = new Flipgrid;
