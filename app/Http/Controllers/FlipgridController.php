@@ -18,28 +18,25 @@ class FlipgridController extends Controller
     public  function create(Request $request) {
         try {
             $payload = json_decode($request->getContent());
-            if(property_exists($payload, 'Type')) {
-                if($payload->Type === "SubscriptionConfirmation") {
-                    //$confirmation_url = curl_init($payload->SubscribeURL);
-                    //curl_exec($confirmation_url);
-                }
-                //return response()->json( 'success', 200);
+            if(property_exists($payload, 'Type') && $payload->Type === "SubscriptionConfirmation") {
+                $confirmation_url = curl_init($payload->SubscribeURL);
+                curl_exec($confirmation_url);
+                return response()->json( 'success', 200);
             }
-
-            $fg = new Flipgrid;
-            $fg->grid_id = 1;
-            $fg->topic_id = 1;
-            $fg->payload = json_encode($request->getContent());
-            $fg->save();
+            if(property_exists($payload, 'Message')) {
+                $data = $payload->Message;
+                $fg = new Flipgrid;
+                $fg->grid_id = $data->grid_id;
+                $fg->topic_id = $data->topic_id;
+                $fg->payload = json_encode($request->getContent());
+                $fg->save();
+                return response()->json( 'Message received', 200);
+            }
             return response()->json("Success", 200);
         } catch (\Exception $e) {
-            $fg = new Flipgrid;
-            $fg->grid_id = 1;
-            $fg->topic_id = 1;
-            $fg->payload = json_encode($e->getMessage());
-            $fg->save();
             return response()->json('Error'.$e->getMessage(), 500);
         }
+        return response()->json('Warning, nothing happened', 500);
     }
 
     public function getConfirmation() {
