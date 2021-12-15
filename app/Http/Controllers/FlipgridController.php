@@ -16,17 +16,16 @@ class FlipgridController extends Controller
     }
 
     public  function create(Request $request) {
-
-        $payload = json_decode($request->getContent());
-        if(property_exists($payload, 'Type')) {
-            if($payload->Type === "SubscriptionConfirmation") {
-                $confirmation_url = curl_init($payload->SubscribeURL);
-                curl_exec($confirmation_url);
-            }
-            return response()->json( 'success', 200);
-        }
-
         try {
+            $payload = json_decode($request->getContent());
+            if(property_exists($payload, 'Type')) {
+                if($payload->Type === "SubscriptionConfirmation") {
+                    $confirmation_url = curl_init($payload->SubscribeURL);
+                    curl_exec($confirmation_url);
+                }
+                return response()->json( 'success', 200);
+            }
+
             $fg = new Flipgrid;
             $fg->grid_id = 1;
             $fg->topic_id = 1;
@@ -34,6 +33,11 @@ class FlipgridController extends Controller
             $fg->save();
             return response()->json("Success", 200);
         } catch (\Exception $e) {
+            $fg = new Flipgrid;
+            $fg->grid_id = 1;
+            $fg->topic_id = 1;
+            $fg->payload = json_encode($e->getMessage());
+            $fg->save();
             return response()->json('Error'.$e->getMessage(), 500);
         }
     }
