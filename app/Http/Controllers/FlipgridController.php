@@ -32,11 +32,11 @@ class FlipgridController extends Controller
                 $fg->save();
                 return response()->json( 'Message received', 200);
             }
-            return response()->json("Success", 200);
         } catch (\Exception $e) {
             return response()->json('Error'.$e->getMessage(), 500);
         }
-        return response()->json('Warning, nothing happened', 500);
+
+        return response()->json('Warning, nothing happened', 200);
     }
 
     public function getConfirmation() {
