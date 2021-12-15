@@ -18,7 +18,12 @@ class FlipgridController extends Controller
     public  function create(Request $request) {
         try {
             $payload = json_decode($request->getContent());
-            if(property_exists($payload, 'Type') && $payload->Type === "SubscriptionConfirmation") {
+            if (empty($payload)) {
+                return response()->json('Missing content', 200);
+            }
+
+            if(property_exists($payload, 'Type') &&
+                $payload->Type === "SubscriptionConfirmation") {
                 $confirmation_url = curl_init($payload->SubscribeURL);
                 curl_exec($confirmation_url);
                 return response()->json( 'success', 200);
@@ -35,7 +40,6 @@ class FlipgridController extends Controller
         } catch (\Exception $e) {
             return response()->json('Error'.$e->getMessage(), 500);
         }
-
         return response()->json('Warning, nothing happened', 200);
     }
 
