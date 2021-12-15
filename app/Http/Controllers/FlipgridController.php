@@ -29,7 +29,7 @@ class FlipgridController extends Controller
                 return response()->json( 'success', 200);
             }
             if(property_exists($payload, 'Message')) {
-                $data = $payload->Message;
+                $data = json_decode($payload->Message);
                 $fg = new Flipgrid;
                 $fg->grid_id = $data->grid_id;
                 $fg->topic_id = $data->topic_id;
