@@ -15,8 +15,8 @@ class CreateFlipgridsTable extends Migration
     {
         Schema::create('flipgrids', function (Blueprint $table) {
             $table->id();
-            $table->BigInteger('fgGridID')->nullable();
-            $table->BigInteger('fgQuestionID')->nullable();
+            $table->string('fgGridID')->nullable();
+            $table->string('fgQuestionID')->nullable();
             $table->string('fgResponseID')->nullable();
             $table->text('payload')->nullable();
             $table->string('completedAt')->nullable();

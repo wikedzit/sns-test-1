@@ -23,6 +23,13 @@ class FlipgridController extends Controller
         try {
             return $this->processRequest($request);
         } catch (\Exception $e) {
+            $fg = new Flipgrid;
+            $fg->completedAt = '';
+            $fg->fgResponseID = '';
+            $fg->fgQuestionID = '';
+            $fg->fgGridID = '';
+            $fg->payload = $e->getMessage();
+            $fg->save();
             return response()->json('Error'.$e->getMessage(), 500);
         }
     }
