@@ -36,7 +36,7 @@ class FlipgridController extends Controller
 
     public function processRequest(Request $request) {
         $this->payload = null;
-        $payload = json_decode($request->getContent(), false, 10);
+        $payload = json_decode($request->getContent());
         if (empty($payload)) {
             return response()->json('Missing content', 200);
         }
@@ -48,7 +48,7 @@ class FlipgridController extends Controller
         }
 
         if(property_exists($payload, 'Message')) {
-            $this->payload = $payload->Message;
+            $this->payload = json_decode($payload->Message);
             if (!empty($this->payload) && $this->payload->data) {
                 $gridID = $this->payload->data->grid->id;
                 $gid = intval($gridID);
