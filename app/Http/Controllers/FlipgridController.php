@@ -36,7 +36,7 @@ class FlipgridController extends Controller
 
     public function processRequest(Request $request) {
         $this->payload = null;
-        $payload = json_decode($request->getContent());
+        $payload = json_decode($request->getContent(), false, 10);
         if (empty($payload)) {
             return response()->json('Missing content', 200);
         }
