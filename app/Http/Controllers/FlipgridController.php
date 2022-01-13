@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Flipgrid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
 
 class FlipgridController extends Controller
 {
@@ -33,8 +34,9 @@ class FlipgridController extends Controller
         }
 
         if(property_exists($payload, 'Type') && $payload->Type === "SubscriptionConfirmation") {
-            $confirmation_url = curl_init($payload->SubscribeURL);
-            curl_exec($confirmation_url);
+            Http::get($payload->SubscribeURL);
+            //$confirmation_url = curl_init($payload->SubscribeURL);
+            //curl_exec($confirmation_url);
             return response()->json( 'success', 200);
         }
 
