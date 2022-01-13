@@ -48,7 +48,7 @@ class FlipgridController extends Controller
         }
 
         if(property_exists($payload, 'Message')) {
-            $this->payload = json_decode($payload->Message);
+            $this->payload = $payload->Message;
             if (!empty($this->payload) && $this->payload->data) {
                 $gridID = $this->payload->data->grid->id;
                 $gid = intval($gridID);
