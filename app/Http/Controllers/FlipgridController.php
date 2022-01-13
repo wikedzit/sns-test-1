@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Flipgrid;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
@@ -33,19 +34,20 @@ class FlipgridController extends Controller
             return response()->json('Missing content', 200);
         }
 
+        // Run this block to auto confirm AWS-SNS subscription
         if(property_exists($payload, 'Type') && $payload->Type === "SubscriptionConfirmation") {
             Http::get($payload->SubscribeURL);
-            //$confirmation_url = curl_init($payload->SubscribeURL);
-            //curl_exec($confirmation_url);
             return response()->json( 'success', 200);
         }
 
         if(property_exists($payload, 'Message')) {
             $this->payload = json_decode($payload->Message);
             $fg = new Flipgrid;
-            $fg->grid_id = $this->payload->grid_id;
-            $fg->topic_id = $this->payload->topic_id;
-            $fg->payload = json_encode($payload->Message);
+            $fg->completedAt = Carbon::parse($this->payload->data->response->created_at)->toDateTimeString();
+            $fg->fgResponseID = $this->payload->data->response->id;
+            $fg->fgQuestionID = $this->payload->data->response->topic_id;
+            $fg->fgGridID = $this->payload->data->grid->id;
+            $fg->payload = $payload->Message;
             $fg->save();
             return response()->json( 'Message received', 200);
         }
