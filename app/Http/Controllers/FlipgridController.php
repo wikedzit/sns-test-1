@@ -13,7 +13,7 @@ class FlipgridController extends Controller
     protected $payload;
 
     public function  index() {
-        $flipgrids = Flipgrid::all();
+        $flipgrids = Flipgrid::orderBy('created_at','desc')->get();
         return view('flipgrids.index', [
             'flipgrids' => $flipgrids
         ]);
