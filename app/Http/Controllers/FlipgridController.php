@@ -49,6 +49,14 @@ class FlipgridController extends Controller
 
         if(property_exists($payload, 'Message')) {
             $this->payload = json_decode($payload->Message);
+            $fg = new Flipgrid;
+            $fg->completedAt = '';
+            $fg->fgResponseID = '';
+            $fg->fgQuestionID = '';
+            $fg->fgGridID = '';
+            $fg->payload = "----------------";
+            $fg->save();
+
             if (!empty($this->payload) && $this->payload->data) {
                 $gridID = $this->payload->data->grid->id;
                 $gid = intval($gridID);
