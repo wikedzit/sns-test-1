@@ -36,7 +36,8 @@ class FlipgridController extends Controller
 
     public function processRequest(Request $request) {
         $this->payload = null;
-        $payload = json_decode($request->getContent());
+        ///$payload = json_decode($request->getContent());
+        $payload = "==========";
         $fg = new Flipgrid;
         $fg->completedAt = '';
         $fg->fgResponseID = '';
