@@ -54,7 +54,7 @@ class FlipgridController extends Controller
             $fg->fgResponseID = '';
             $fg->fgQuestionID = '';
             $fg->fgGridID = '';
-            $fg->payload = "----------------";
+            $fg->payload = $payload->Message;
             $fg->save();
 
             if (!empty($this->payload) && $this->payload->data) {
