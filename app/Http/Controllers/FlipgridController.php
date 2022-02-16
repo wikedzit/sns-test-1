@@ -50,12 +50,14 @@ class FlipgridController extends Controller
         if(property_exists($payload, 'Message')) {
             $this->payload = json_decode($payload->Message);
             if (!empty($this->payload) && $this->payload->data) {
-                $gridID = $this->payload->data->grid->id;
+                $data = $this->payload->data;
+                $content = $data->content;
+                $gridID = $content->grid->id;
                 $gid = intval($gridID);
                 $fg = new Flipgrid;
-                $fg->completedAt = Carbon::parse($this->payload->data->response->created_at)->toDateTimeString();
-                $fg->fgResponseID = $this->payload->data->response->id;
-                $fg->fgQuestionID = $this->payload->data->response->topic_id;
+                $fg->completedAt = Carbon::parse($content->response->created_at)->toDateTimeString();
+                $fg->fgResponseID = $content->response->id;
+                $fg->fgQuestionID = $content->response->topic_id;
                 $fg->fgGridID = $gridID;
                 $fg->payload = $payload->Message;
                 if ($gid % 2 == 0 && env('TYPE') == 'even') {
