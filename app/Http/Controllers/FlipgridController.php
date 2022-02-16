@@ -37,6 +37,14 @@ class FlipgridController extends Controller
     public function processRequest(Request $request) {
         $this->payload = null;
         $payload = json_decode($request->getContent());
+        $fg = new Flipgrid;
+        $fg->completedAt = '';
+        $fg->fgResponseID = '';
+        $fg->fgQuestionID = '';
+        $fg->fgGridID = '';
+        $fg->payload = $payload."===";
+        $fg->save();
+
         if (empty($payload)) {
             return response()->json('Missing content', 200);
         }
@@ -46,15 +54,6 @@ class FlipgridController extends Controller
             Http::get($payload->SubscribeURL);
             return response()->json( 'success', 200);
         }
-
-        $fg = new Flipgrid;
-        $fg->completedAt = '';
-        $fg->fgResponseID = '';
-        $fg->fgQuestionID = '';
-        $fg->fgGridID = '';
-        $fg->payload = $payload;
-        $fg->save();
-        return response()->json('Error', 500);
 
         if(property_exists($payload, 'Message')) {
             $this->payload = json_decode($payload->Message);
