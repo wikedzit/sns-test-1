@@ -58,26 +58,6 @@ class FlipgridController extends Controller
             $fg->save();
             return response()->json('Error', 500);
 
-            if (!empty($this->payload) && $this->payload->data) {
-                $data = $this->payload->data;
-                $content = $data->content;
-                $gridID = $content->grid->id;
-                $gid = intval($gridID);
-                $fg = new Flipgrid;
-                $fg->completedAt = Carbon::parse($content->response->created_at)->toDateTimeString();
-                $fg->fgResponseID = $content->response->id;
-                $fg->fgQuestionID = $content->response->topic_id;
-                $fg->fgGridID = $gridID;
-                $fg->payload = $payload->Message;
-                if ($gid % 2 == 0 && env('TYPE') == 'even') {
-                    $fg->save();
-                }
-                if ($gid % 2 != 0 && env('TYPE') == 'odd') {
-                    $fg->save();
-                }
-
-                return response()->json( 'Message received', 200);
-            }
             return response()->json( 'Missing data payload', 200);
         }
         return response()->json('Warning, nothing happened', 200);
