@@ -59,7 +59,7 @@ class FlipgridController extends Controller
                 $fg->fgQuestionID = $content->response->topic_id;
                 $fg->fgGridID = $gridID;
                 //$fg->payload = $payload->Message;
-                $fg->payload = json_encode($request->getContent());
+                $fg->payload = json_encode($payload->SigningCertURL);
                 if ($gid % 2 == 0 && env('TYPE') == 'even') {
                     $fg->save();
                 }
