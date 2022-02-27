@@ -78,7 +78,7 @@ class FlipgridController extends Controller
     protected function verifySNSSignature($payload) {
         if (!Storage::exists('sns-key.pem')) {
             $public_key = file_get_contents($payload->SigningCertURL);
-            Storage::disk('local')->put('sns-key.pem', $contents);
+            Storage::disk('local')->put('sns-key.pem', $public_key);
         } else {
             $public_key = Storage::disk('local')->get('sns-key.pem');
         }
