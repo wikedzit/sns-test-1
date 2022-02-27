@@ -91,11 +91,11 @@ class FlipgridController extends Controller
             $payload->Type
         );
 
-//        $signature = base64_decode($payload->Signature);
+        $signature = base64_decode($payload->Signature);
 //        if(openssl_verify($messageBody, $signature, $public_key)) {
 //            return $signature;
 //        };
 
-        return "Failed";
+        return $signature;
     }
 }
