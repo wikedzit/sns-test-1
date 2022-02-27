@@ -96,6 +96,6 @@ class FlipgridController extends Controller
 //            return $signature;
 //        };
 
-        return $signature;
+        return json_encode($payload->Signature);
     }
 }
