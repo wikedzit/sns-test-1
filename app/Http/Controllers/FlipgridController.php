@@ -83,20 +83,31 @@ class FlipgridController extends Controller
             $key_content = Storage::disk('local')->get('sns-key.pem');
         }
 
-        $messageBody = sprintf("Message\n%s\nMessageId\n%s\nTimestamp\n%s\nTopicArn\n%s\nType\n%s\n",
-            $payload->Message,
-            $payload->MessageId,
-            $payload->Timestamp,
-            $payload->TopicArn,
-            $payload->Type
-        );
+        if ($payload->Type === "SubscriptionConfirmation") {
+            $messageBody = sprintf(
+                "Message\n%s\nMessageId\n%s\nSubscribeURL\n%s\nTimestamp\n%s\nToken\n%s\nTopicArn\n%s\nType\n%s\n",
+                $payload->Message,
+                $payload->MessageId,
+                $payload->SubscribeURL,
+                $payload->Timestamp,
+                $payload->Token,
+                $payload->TopicArn,
+                $payload->Type
+            );
+        }elseif ($payload->Type === "Notification") {
+            $messageBody = sprintf("Message\n%s\nMessageId\n%s\nTimestamp\n%s\nTopicArn\n%s\nType\n%s\n",
+                $payload->Message,
+                $payload->MessageId,
+                $payload->Timestamp,
+                $payload->TopicArn,
+                $payload->Type
+            );
+        } else {
+            return false;
+        }
 
         $public_key = openssl_pkey_get_public($key_content);
         $signature = base64_decode($payload->Signature);
-        if(openssl_verify($messageBody, $signature, $public_key)) {
-            return "Passed";
-        };
-
-        return "Failed";
+        return openssl_verify($messageBody, $signature, $public_key);
     }
 }
