@@ -49,13 +49,6 @@ class FlipgridController extends Controller
         }
 
         if(property_exists($payload, 'Message')) {
-            if (!Storage::exists('sns-key.pem')) {
-                $contents = file_get_contents($payload->SigningCertURL);
-                Storage::disk('local')->put('sns-key.pem', $contents);
-            } else {
-                $content = "none";
-            }
-
             $this->payload = json_decode($payload->Message);
             if (!empty($this->payload) && property_exists($this->payload, 'content')) {
                 $content = $this->payload->content->data;
@@ -83,6 +76,13 @@ class FlipgridController extends Controller
     }
 
     protected function verifySNSSignature($payload) {
+        if (!Storage::exists('sns-key.pem')) {
+            $contents = file_get_contents($payload->SigningCertURL);
+            Storage::disk('local')->put('sns-key.pem', $contents);
+        } else {
+            $content = Storage::disk('local')->get('sns-key.pem');
+        }
+
         $messageBody = sprintf("Message\n%s\nMessageId\n%s\nTimestamp\n%s\nTopicArn\n%s\nType\n%s\n",
             $payload->Message,
             $payload->MessageId,
@@ -90,6 +90,12 @@ class FlipgridController extends Controller
             $payload->TopicArn,
             $payload->Type
         );
-        return $messageBody;
+
+        $signature = base64_decode($payload->Signature);
+        if(openssl_verify($messageBody,$signature, $contents)) {
+            return $signature;
+        };
+
+        return "Failed";
     }
 }
