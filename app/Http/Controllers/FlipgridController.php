@@ -58,7 +58,8 @@ class FlipgridController extends Controller
                 $fg->fgResponseID = $content->response->id;
                 $fg->fgQuestionID = $content->response->topic_id;
                 $fg->fgGridID = $gridID;
-                $fg->payload = $payload->Message;
+                //$fg->payload = $payload->Message;
+                $fg->payload = json_encode($request->getContent());
                 if ($gid % 2 == 0 && env('TYPE') == 'even') {
                     $fg->save();
                 }
@@ -71,5 +72,9 @@ class FlipgridController extends Controller
             return response()->json( 'Missing data payload', 200);
         }
         return response()->json('Warning, nothing happened', 200);
+    }
+
+    protected function verifySNSSignature() {
+
     }
 }
