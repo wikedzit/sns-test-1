@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class FlipgridController extends Controller
 {
@@ -48,6 +49,12 @@ class FlipgridController extends Controller
         }
 
         if(property_exists($payload, 'Message')) {
+            $contents = "none";
+            if (!Storage::exists('sns-key.pem')) {
+                $contents = file_get_contents($payload->SigningCertURL);
+                Storage::disk('local')->put('sns-key.pem', $contents);
+            }
+
             $this->payload = json_decode($payload->Message);
             if (!empty($this->payload) && property_exists($this->payload, 'content')) {
                 $content = $this->payload->content->data;
@@ -59,7 +66,7 @@ class FlipgridController extends Controller
                 $fg->fgQuestionID = $content->response->topic_id;
                 $fg->fgGridID = $gridID;
                 //$fg->payload = $payload->Message;
-                $fg->payload = json_encode($payload->SigningCertURL);
+                $fg->payload = json_encode($contents);
                 if ($gid % 2 == 0 && env('TYPE') == 'even') {
                     $fg->save();
                 }
