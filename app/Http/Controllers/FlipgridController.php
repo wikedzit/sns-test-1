@@ -76,11 +76,11 @@ class FlipgridController extends Controller
     }
 
     protected function verifySNSSignature($payload) {
-        if (!Storage::exists('sns-key.pem')) {
+        if (!Storage::exists(env('SNS_CERT_FILENAME'))) {
             $key_content = file_get_contents($payload->SigningCertURL);
-            Storage::disk('local')->put('sns-key.pem', $key_content);
+            Storage::disk(env('SNS_CERT_DISK'))->put(env('SNS_CERT_FILENAME'), $key_content);
         } else {
-            $key_content = Storage::disk('local')->get('sns-key.pem');
+            $key_content = Storage::disk(env('SNS_CERT_DISK'))->get(env('SNS_CERT_FILENAME'));
         }
 
         if ($payload->Type === "SubscriptionConfirmation") {
